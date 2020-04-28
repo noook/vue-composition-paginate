@@ -1,18 +1,55 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import { defineComponent, ref } from '@vue/composition-api';
+import usePaginate from '@/hooks/paginate';
 
-export default Vue.extend({
+interface User {
+  name: {
+    title: string;
+    first: string;
+    last: string;
+  };
+  email: string;
+}
+
+interface Payload {
+  data: User[];
+  pagination: {
+    total: number;
+    resultsPerPage: number;
+    page: number;
+    totalPage: number;
+  };
+}
+
+export default defineComponent({
   name: 'App',
-  components: {
-    HelloWorld,
+  setup() {
+    const filters = ref({
+      test: true,
+      order: 'ASC',
+    });
+
+    const paginate = usePaginate<User, Payload>({
+      url: 'http://localhost:3333/users',
+      currentPage: 1,
+      resultsPerPage: 20,
+      params: filters,
+      totalPageTransformer: (response) => response.pagination.totalPage,
+      totalTransformer: (response) => response.pagination.total,
+      dataTransformer: (response) => response.data,
+    });
+
+    paginate.goToPage(1);
+
+    return {
+      ...paginate,
+    };
   },
 });
 </script>
