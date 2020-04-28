@@ -14,10 +14,9 @@ router.get('/', (req, res) => {
     ...defaultQuery,
     ...req.query,
   };
-  console.log(req.query);
 
   const result = {
-    data: users.slice(page * limit, page * limit + limit),
+    data: users.slice((page - 1) * limit, (page - 1) * limit + limit),
     pagination: {
       page,
       total: users.length,

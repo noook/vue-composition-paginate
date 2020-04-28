@@ -1,5 +1,5 @@
 import {
-  ref, watch, computed, Ref,
+  ref, watch, computed, Ref, isRef,
 } from '@vue/composition-api';
 import axios from 'axios';
 
@@ -9,7 +9,7 @@ type PaginateOptions<T, Payload = T[]> = {
   totalTransformer: (payload: Payload) => number;
   dataTransformer?: (payload: Payload) => T[];
   currentPage?: number;
-  resultsPerPage?: number;
+  resultsPerPage?: Ref<number> | number;
   range?: number;
   updateFn?: (page?: number) => void;
   params?: Ref<Record<string | number, string | number | boolean>>;
@@ -23,13 +23,14 @@ export default function usePaginate<T, Payload = T[]>({
   dataTransformer = (results) => results as unknown as T[],
   totalPageTransformer,
   totalTransformer,
-  resultsPerPage = 25,
+  resultsPerPage = ref<number>(25),
   range = 5,
 }: PaginateOptions<T, Payload>) {
   // Null at first, updated after the first call, according to the response pagination context
   const lastPage = ref<null | number>(null);
   const total = ref<number>(0);
   const loading = ref<boolean>(false);
+  const limit = isRef(resultsPerPage) ? resultsPerPage : ref<number>(resultsPerPage);
 
   const currentPage = ref<number>(page);
   // Possibility to update the URL after changing the page for example
@@ -65,7 +66,7 @@ export default function usePaginate<T, Payload = T[]>({
     return axios.get<Payload>(url, {
       // Query parameters are merged with the default ones provided in the URL option
       params: {
-        limit: resultsPerPage,
+        limit: limit.value,
         page: currentPage.value,
         ...params.value,
       },
@@ -112,6 +113,7 @@ export default function usePaginate<T, Payload = T[]>({
     goToPage,
     previous,
     data,
+    resultsPerPage: limit,
     total,
   };
 }
