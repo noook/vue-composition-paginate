@@ -21,7 +21,9 @@
         </table>
       </div>
       <div class="infos">
-        <p>Page {{ currentPage }} — Résultats: {{ results.start }} - {{ results.end }}</p>
+        <p>
+          Page {{ currentPage }} — Résultats: {{ results.start }} - {{ results.end }} sur {{ total}}
+        </p>
         <input
           v-model.number="resultsPerPage"
           @change="goToPage(currentPage)"
