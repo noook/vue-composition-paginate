@@ -113,7 +113,7 @@ export default defineComponent({
 | limitField           | `String`                                                      | `false`  | `"limit"`                              | Name of the field in the query to specify the maximum number of items we want to fetch                                                     |
 | range                | `Number`                                                      | `false`  | `5`                                    | Number of pages to display around the current one                                                                                          |
 | includeLimits        | `Boolean`                                                     | `false`  | `true`                                 | Whether to add first and last pages in the page list around the current one                                                                |
-| params               | <nobr>`Ref<Record<string, number | boolean | string>>`</nobr> | `false`  | `{}`                                   | Additional query params to add in the request. Must be a `ref` or a `computed` value, returning an object whose depth is 1.                |
+| params               | <nobr>`Ref<Record<string, number \| boolean \| string>>`</nobr> | `false`  | `{}`                                   | Additional query params to add in the request. Must be a `ref` or a `computed` value, returning an object whose depth is 1.                |
 
 # Return values
 
@@ -128,6 +128,6 @@ The function will return an object that is destructurable containing the followi
 | previous       | <nobr>`(page: number) => Promise<Payload>`</nobr> | Function to call to go to the previous page                                                                                  |
 | next           | <nobr>`(page: number) => Promise<Payload>`</nobr> | Function to call to go to the next page                                                                                      |
 | resultsPerPage | `Ref<number>`                                     | Reactive reference of the limit of results per page                                                                          |
-| total          | `Ref<number> | undefined`                         | Reactive reference of the total number of items. `undefined` if no function to extract the total number of items is provided |
+| total          | `Ref<number> \| undefined`                         | Reactive reference of the total number of items. `undefined` if no function to extract the total number of items is provided |
 | lastPage       | `Ref<number>`                                     | Reactive reference of the number of the last page                                                                            |
 | loading        | `Ref<boolean>`                                    | Reactive reference of HTTP request completion state                                                                          |
