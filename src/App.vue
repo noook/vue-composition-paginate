@@ -22,7 +22,8 @@
       </div>
       <div class="infos">
         <p>
-          Page {{ currentPage }} — Résultats: {{ results.start }} - {{ results.end }} sur {{ total}}
+          <!-- Page {{ currentPage }} — Résultats:
+          {{ results.start }} - {{ results.end }} sur {{ total }} -->
         </p>
         <input
           v-model.number="resultsPerPage"
@@ -31,21 +32,12 @@
       </div>
       <div class="pagination">
         <button @click="previous">&lt;</button>
-        <button :class="{ active: currentPage === 1 }" @click="goToPage(1)">1</button>
-        <span v-if="pages[0] !== 2">...</span>
         <button
           :class="{ active: currentPage === page }"
           @click="goToPage(page)"
           v-for="page in pages"
           :key="page">
           {{ page }}
-        </button>
-        <span v-if="pages.slice(-1)[0] !== lastPage - 1">...</span>
-        <button
-          :class="{ active: currentPage === lastPage}"
-          v-if="lastPage"
-          @click="goToPage(lastPage)">
-          {{ lastPage}}
         </button>
         <button @click="next">&gt;</button>
       </div>
@@ -55,6 +47,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
+import axios from 'axios';
 import usePaginate from '@/hooks/paginate';
 
 interface User {
@@ -85,13 +78,11 @@ export default defineComponent({
     });
 
     const paginate = usePaginate<User, Payload>({
+      instance: axios,
       url: 'http://localhost:3333/users',
-      currentPage: 1,
-      resultsPerPage: 25,
-      params: filters,
       totalPageTransformer: (response) => response.pagination.totalPage,
-      totalTransformer: (response) => response.pagination.total,
       dataTransformer: (response) => response.data,
+      params: filters,
     });
 
     paginate.goToPage(1);

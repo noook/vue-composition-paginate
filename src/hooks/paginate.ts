@@ -1,79 +1,107 @@
 import {
   ref, watch, computed, Ref, isRef,
 } from '@vue/composition-api';
-import axios from 'axios';
+import { AxiosInstance } from 'axios';
 
 type PaginateOptions<T, Payload = T[]> = {
+  instance: AxiosInstance;
   url: string;
+  pageField?: string;
   totalPageTransformer: (payload: Payload) => number;
-  totalTransformer: (payload: Payload) => number;
+  totalTransformer?: (payload: Payload) => number;
   dataTransformer?: (payload: Payload) => T[];
   currentPage?: number;
   resultsPerPage?: Ref<number> | number;
   range?: number;
-  updateFn?: (page?: number) => void;
-  params?: Ref<Record<string | number, string | number | boolean>>;
+  includeLimits?: boolean;
+  onUpdate?: (page?: number) => void;
+  params?: Ref<Record<string, number | boolean | string>>;
 }
 
-export default function usePaginate<T, Payload = T[]>({
+interface PaginationData<T, Payload> {
+  data: Ref<T[]>;
+  pages: Ref<Readonly<number[]>>;
+  currentPage: Ref<number>;
+  goToPage: (page: number) => Promise<Payload>;
+  previous: () => Promise<Payload>;
+  next: () => Promise<Payload>;
+  resultsPerPage: Ref<number>;
+  total?: Ref<number>;
+  lastPage: Ref<number>;
+  loading: Ref<boolean>;
+}
+
+function usePaginate<T, Payload = T[]>(
+  options: Omit<PaginateOptions<T, Payload>, 'totalTransformer'>
+): Omit<PaginationData<T, Payload>, 'total'>
+
+function usePaginate<T, Payload = T[]>({
+  instance,
   url,
+  pageField = 'page',
   currentPage: page = 1,
-  updateFn = () => {},
+  onUpdate = () => {},
   params = ref({}),
   dataTransformer = (results) => results as unknown as T[],
   totalPageTransformer,
   totalTransformer,
   resultsPerPage = ref<number>(25),
   range = 5,
-}: PaginateOptions<T, Payload>) {
-  // Null at first, updated after the first call, according to the response pagination context
-  const lastPage = ref<null | number>(null);
+  includeLimits = true,
+}: PaginateOptions<T, Payload>): PaginationData<T, Payload> {
+  const lastPage = ref<number>(1);
   const total = ref<number>(0);
   const loading = ref<boolean>(false);
   const limit = isRef(resultsPerPage) ? resultsPerPage : ref<number>(resultsPerPage);
 
   const currentPage = ref<number>(page);
-  // Possibility to update the URL after changing the page for example
-  watch(currentPage, (newValue) => updateFn(newValue));
+
+  // Update URL or trigger actions when page changes
+  watch(currentPage, (newValue) => onUpdate(newValue));
 
   const pages = computed<number[]>(() => {
-    const totalPages = (lastPage.value || 1) - 1;
+    const totalPages = lastPage.value;
     const paging = [];
-    let start;
+    let start: number;
 
-    if (!lastPage.value) {
-      return [];
-    } if (currentPage.value < (range / 2) + 1) {
-      start = 2;
-      // Don't go beyond the last page
-    } else if (currentPage.value >= (totalPages - (range / 2))) {
-      start = Math.floor(totalPages - range + 1);
+    if (currentPage.value >= (totalPages - (range / 2))) {
+      start = Math.max(totalPages - range, 1);
     } else {
-      start = (currentPage.value - Math.floor(range / 2));
+      start = Math.max(currentPage.value - Math.floor(range / 2), 1);
     }
 
     for (let i = start; i <= Math.min(lastPage.value, ((start + range) - 1)); i += 1) {
       paging.push(i);
     }
 
-    return paging;
+    if (includeLimits) {
+      paging.push(1, totalPages);
+    }
+
+    return paging
+      .filter((value, index, arr) => arr.indexOf(value) === index)
+      .sort((a, b) => a - b);
   });
+
 
   const data = ref<T[]>([]);
 
   function call(): Promise<Payload> {
     loading.value = true;
-    return axios.get<Payload>(url, {
+    return instance.get<Payload>(url, {
       // Query parameters are merged with the default ones provided in the URL option
       params: {
         limit: limit.value,
-        page: currentPage.value,
+        [pageField]: currentPage.value,
         ...params.value,
       },
     }).then(({ data: results }) => {
       data.value = dataTransformer(results);
       lastPage.value = Math.max(totalPageTransformer(results), 1);
-      total.value = totalTransformer(results);
+
+      if (totalTransformer) {
+        total.value = totalTransformer(results);
+      }
 
       // Recursively call this function if the page is out of range,
       // according to the response pagination context
@@ -87,9 +115,7 @@ export default function usePaginate<T, Payload = T[]>({
   }
 
   function goToPage(pageNumber: number) {
-    if (lastPage.value !== null) {
-      currentPage.value = Math.min(Math.max(1, pageNumber), lastPage.value);
-    }
+    currentPage.value = Math.min(Math.max(1, pageNumber), lastPage.value);
     return call();
   }
 
@@ -114,6 +140,8 @@ export default function usePaginate<T, Payload = T[]>({
     previous,
     data,
     resultsPerPage: limit,
-    total,
+    total: totalTransformer ? total : undefined,
   };
 }
+
+export default usePaginate;
