@@ -1,3 +1,7 @@
+[![npm version](https://badge.fury.io/js/vue-composition-paginate.svg)](https://badge.fury.io/js/vue-composition-paginate)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/vue-composition-paginate)
+![npm](https://img.shields.io/npm/dt/vue-composition-paginate)
+
 # Vue Composition Paginate
 
 ## Introduction
@@ -21,6 +25,57 @@ yarn add vue-composition-paginate
 ```
 
 # Usage
+
+Given the following payload:
+```jsonc
+{
+  "data": [
+    {
+      "name": {
+        "title": "Miss",
+        "first": "Ninon",
+        "last": "Philippe"
+      },
+      "email": "ninon.philippe@example.com",
+      "id": {
+        "name": "INSEE",
+        "value": "2NNaN81837684 25"
+      }
+    },
+    {
+      "name": {
+        "title": "Mr",
+        "first": "Axel",
+        "last": "Skavhaug"
+      },
+      "email": "axel.skavhaug@example.com",
+      "id": {
+        "name": "FN",
+        "value": "11118811382"
+      }
+    },
+    {
+      "name": {
+        "title": "Monsieur",
+        "first": "Enrico",
+        "last": "Aubert"
+      },
+      "email": "enrico.aubert@example.com",
+      "id": {
+        "name": "AVS",
+        "value": "756.2544.6409.51"
+      }
+    }
+    // ...
+  ],
+  "pagination": {
+    "page": 1,
+    "total": 624,
+    "resultsPerPage": 25,
+    "totalPage": 25
+  }
+}
+```
 
 ```javascript
 import myAxiosInstance from '@/utils/axios-instance';
@@ -56,7 +111,10 @@ the type of the payload:
 import myAxiosInstance from '@/utils/axios-instance';
 
 interface User {
-  id: string;
+  id: {
+    name: string;
+    value: string;
+  };
   name: {
     title: string;
     first: string;
