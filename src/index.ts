@@ -10,7 +10,7 @@ type PaginateOptions<T, Payload = T[]> = {
   limitField?: string;
   totalPageTransformer: (payload: Payload) => number;
   totalTransformer?: (payload: Payload) => number;
-  dataTransformer?: (payload: Payload) => T[];
+  dataTransformer: (payload: Payload) => T[];
   currentPage?: number;
   resultsPerPage?: Ref<number> | number;
   range?: number;
@@ -33,7 +33,11 @@ interface PaginationData<T, Payload> {
 }
 
 function usePaginate<T, Payload = T[]>(
-  options: Omit<PaginateOptions<T, Payload>, 'totalTransformer'>
+  options: Omit<PaginateOptions<T, Payload>, 'totalTransformer'> & { totalTransformer: (payload: Payload) => number }
+): PaginationData<T, Payload>
+
+function usePaginate<T, Payload = T[]>(
+  options: Omit<PaginateOptions<T, Payload>, 'totalTransformer'> & { totalTransformer?: undefined }
 ): Omit<PaginationData<T, Payload>, 'total'>
 
 function usePaginate<T, Payload = T[]>({
@@ -131,8 +135,7 @@ function usePaginate<T, Payload = T[]>({
     return call();
   }
 
-
-  return {
+  const paginate = {
     currentPage,
     lastPage,
     loading,
@@ -140,10 +143,16 @@ function usePaginate<T, Payload = T[]>({
     pages,
     goToPage,
     previous,
+    total,
     data,
     resultsPerPage: limit,
-    total: totalTransformer ? total : undefined,
   };
+
+  if (!totalTransformer) {
+    delete paginate.total;
+  }
+
+  return paginate;
 }
 
 export default usePaginate;
