@@ -119,15 +119,15 @@ export default defineComponent({
 
 The function will return an object that is destructurable containing the following properties:
 
-| Name                 | Type                                                          | Description                                                                                                                                |
-| -------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| data                 | `Ref<T[]>`                                                    | Array of fetched results
-| pages                  | `Ref<number[]>`                                                      | Generated list of pages around the current page (ex: `[1, 4, 5, <6>, 7, 8, 20]`) |
-| currentPage | `Ref<number>`                   | Reactive reference of the current page                                                                    |
-| goToPage      | <nobr>`(page: number) => Promise<Payload>`</nobr>                      | Function to call to go to a specific page. can be used to refresh the current query |
-| previous      | <nobr>`(page: number) => Promise<Payload>`</nobr>                      | Function to call to go to the previous page |
-| next      | <nobr>`(page: number) => Promise<Payload>`</nobr>                      | Function to call to go to the next page |
-| resultsPerPage      | `Ref<number>`                    | Reactive reference of the limit of results per page |
-| total      | `Ref<number> | undefined`                     | Reactive reference of the total number of items. `undefined` if no function to extract the total number of items is provided |
-| lastPage      | `Ref<number>`                     | Reactive reference of the number of the last page |
-| loading      | `Ref<boolean>`                     | Reactive reference of HTTP request completion state |
+| Name           | Type                                              | Description                                                                                                                  |
+| -------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| data           | `Ref<T[]>`                                        | Array of fetched results                                                                                                     |
+| pages          | `Ref<number[]>`                                   | Generated list of pages around the current page (ex: `[1, 4, 5, <6>, 7, 8, 20]`)                                             |
+| currentPage    | `Ref<number>`                                     | Reactive reference of the current page                                                                                       |
+| goToPage       | <nobr>`(page: number) => Promise<Payload>`</nobr> | Function to call to go to a specific page. can be used to refresh the current query                                          |
+| previous       | <nobr>`(page: number) => Promise<Payload>`</nobr> | Function to call to go to the previous page                                                                                  |
+| next           | <nobr>`(page: number) => Promise<Payload>`</nobr> | Function to call to go to the next page                                                                                      |
+| resultsPerPage | `Ref<number>`                                     | Reactive reference of the limit of results per page                                                                          |
+| total          | `Ref<number> | undefined`                         | Reactive reference of the total number of items. `undefined` if no function to extract the total number of items is provided |
+| lastPage       | `Ref<number>`                                     | Reactive reference of the number of the last page                                                                            |
+| loading        | `Ref<boolean>`                                    | Reactive reference of HTTP request completion state                                                                          |
