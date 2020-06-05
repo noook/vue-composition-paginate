@@ -7,6 +7,7 @@ type PaginateOptions<T, Payload = T[]> = {
   instance: AxiosInstance;
   url: string;
   pageField?: string;
+  limitField?: string;
   totalPageTransformer: (payload: Payload) => number;
   totalTransformer?: (payload: Payload) => number;
   dataTransformer?: (payload: Payload) => T[];
@@ -46,6 +47,7 @@ function usePaginate<T, Payload = T[]>({
   totalPageTransformer,
   totalTransformer,
   resultsPerPage = ref<number>(25),
+  limitField = 'limit',
   range = 5,
   includeLimits = true,
 }: PaginateOptions<T, Payload>): PaginationData<T, Payload> {
@@ -91,7 +93,7 @@ function usePaginate<T, Payload = T[]>({
     return instance.get<Payload>(url, {
       // Query parameters are merged with the default ones provided in the URL option
       params: {
-        limit: limit.value,
+        [limitField]: limit.value,
         [pageField]: currentPage.value,
         ...params.value,
       },
