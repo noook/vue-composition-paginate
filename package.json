@@ -1,8 +1,20 @@
 {
   "name": "vue-composition-paginate",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "author": {
+    "email": "me@neilrichter.com",
+    "name": "Neil Richter",
+    "url": "https://nook.sh"
+  },
+  "description": "vue-composition-pagination is a ready to use composition-api composable tool around axios to help you dealing with paginated APIs.",
+  "homepage": "https://github.com/noook/vue-composition-paginate",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noook/vue-composition-paginate.git"
+  },
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
+  "typings": "./lib/index.d.ts",
   "files": [
     "lib/"
   ],
