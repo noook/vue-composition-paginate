@@ -78,6 +78,7 @@ Given the following payload:
 ```
 
 ```javascript
+import usePaginate from 'vue-composition-paginate';
 import myAxiosInstance from '@/utils/axios-instance';
 
 export default defineComponent({
