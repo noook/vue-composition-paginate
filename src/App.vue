@@ -48,13 +48,17 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import axios from 'axios';
-import usePaginate from '@/hooks/paginate';
+import usePaginate from 'vue-composition-paginate';
 
 interface User {
   name: {
     title: string;
     first: string;
     last: string;
+  };
+  id: {
+    name: string;
+    value: string;
   };
   email: string;
 }
