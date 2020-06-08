@@ -1,6 +1,6 @@
 {
   "name": "vue-composition-paginate",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": {
     "email": "me@neilrichter.com",
     "name": "Neil Richter",
@@ -22,10 +22,9 @@
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublish": "npm run tsc"
   },
-  "dependencies": {
-    "@vue/composition-api": "^0.6.0",
-    "axios": "^0.19.2",
-    "vue": "^2.6.11"
+  "peerDependencies": {
+    "@vue/composition-api": "^0.6.1",
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.26.0",
@@ -36,6 +35,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^6.2.2",
     "typescript": "~3.8.3",
+    "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.11"
   }
 }
