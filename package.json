@@ -8,6 +8,9 @@
   },
   "description": "vue-composition-pagination is a ready to use composition-api composable tool around axios to help you dealing with paginated APIs.",
   "homepage": "https://github.com/noook/vue-composition-paginate",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@noook"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/noook/vue-composition-paginate.git"
