@@ -1,6 +1,6 @@
 import {
   ref, watch, computed, Ref, isRef,
-} from '@vue/composition-api';
+} from 'vue';
 import { AxiosInstance } from 'axios';
 
 type PaginateOptions<T, Payload = T[]> = {
