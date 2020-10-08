@@ -63,7 +63,7 @@ function usePaginate<T, Payload = T[]>({
   const currentPage = ref<number>(page);
 
   // Update URL or trigger actions when page changes
-  watch(currentPage, (newValue) => onUpdate(newValue));
+  watch(currentPage, (newValue: number) => onUpdate(newValue));
 
   const pages = computed<number[]>(() => {
     const totalPages = lastPage.value;
@@ -90,7 +90,7 @@ function usePaginate<T, Payload = T[]>({
   });
 
 
-  const data = ref<T[]>([]);
+  const data = ref<T[]>([]) as Ref<T[]>;
 
   function call(): Promise<Payload> {
     loading.value = true;
@@ -143,8 +143,8 @@ function usePaginate<T, Payload = T[]>({
     pages,
     goToPage,
     previous,
-    total,
     data,
+    total: totalTransformer ? total : undefined,
     resultsPerPage: limit,
   };
 
