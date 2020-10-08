@@ -46,9 +46,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import axios from 'axios';
-import usePaginate from 'vue-composition-paginate';
+import usePaginate from '@/lib/esm';
 
 interface User {
   name: {
@@ -152,7 +152,6 @@ table {
 }
 
 </style>
-
 
 <style>
 h1 {
