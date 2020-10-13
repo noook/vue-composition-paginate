@@ -55,7 +55,7 @@ function usePaginate<T, Payload = T[]>({
   range = 5,
   includeLimits = true,
 }: PaginateOptions<T, Payload>): PaginationData<T, Payload> {
-  const lastPage = ref<number>(1);
+  const lastPage = ref<number>(0);
   const total = ref<number>(0);
   const loading = ref<boolean>(false);
   const limit = isRef(resultsPerPage) ? resultsPerPage : ref<number>(resultsPerPage);
@@ -121,7 +121,11 @@ function usePaginate<T, Payload = T[]>({
   }
 
   function goToPage(pageNumber: number) {
-    currentPage.value = Math.min(Math.max(1, pageNumber), lastPage.value);
+    if (lastPage.value) {
+      currentPage.value = Math.min(Math.max(1, pageNumber), lastPage.value);
+    } else {
+      currentPage.value = pageNumber;
+    }
     return call();
   }
 
