@@ -92,6 +92,28 @@ test('Reponse\'s data list length can be changed', async (done) => {
   done();
 });
 
+test('onUpdate function is correctly executed when data is updated', async (done) => {
+  let hasRun = false;
+  let pageValue = null;
+
+  const pagination = usePaginate<User, ServerResponse>({
+    instance: api,
+    url: '/users',
+    totalPageTransformer: response => response.pagination.totalPage,
+    dataTransformer: response => response.data,
+    onUpdate: (page, params) => {
+      hasRun = true
+      pageValue = page
+    }
+  });
+
+  await pagination.goToPage(1);
+  expect(hasRun).toBe(true);
+  expect(pageValue).toBe(pagination.currentPage.value);
+
+  done();
+});
+
 afterAll(() => {
   server.close();
 });
