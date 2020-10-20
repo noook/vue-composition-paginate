@@ -15,7 +15,7 @@ type PaginateOptions<T, Payload = T[]> = {
   resultsPerPage?: Ref<number> | number;
   range?: number;
   includeLimits?: boolean;
-  onUpdate?: (page?: number) => void;
+  onUpdate?: (page?: number, params?: Record<string, string | number | boolean>) => void;
   params?: Ref<Record<string, number | boolean | string>>;
 }
 
@@ -61,9 +61,6 @@ function usePaginate<T, Payload = T[]>({
   const limit = isRef(resultsPerPage) ? resultsPerPage : ref<number>(resultsPerPage);
 
   const currentPage = ref<number>(page);
-
-  // Update URL or trigger actions when page changes
-  watch(currentPage, (newValue: number) => onUpdate(newValue));
 
   const pages = computed<number[]>(() => {
     const totalPages = lastPage.value;
@@ -117,7 +114,10 @@ function usePaginate<T, Payload = T[]>({
       }
       return results;
     })
-      .finally(() => loading.value = false);
+      .finally(() => {
+        loading.value = false
+        onUpdate(currentPage.value, params.value);
+      });
   }
 
   function goToPage(pageNumber: number) {
